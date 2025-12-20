@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تشخيص مرض السكري</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+        body {
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .main-card {
+            background: #fff;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .card-header-custom {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            padding: 24px 30px;
+            border-radius: 16px 16px 0 0;
+        }
+        .card-header-custom h2 {
+            color: #1a1a2e;
+            font-weight: 700;
+        }
+        .form-label {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 12px 16px;
+            transition: all 0.3s;
+        }
+        .form-control:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .input-group-text {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-right: none;
+            color: #6c757d;
+            border-radius: 0 10px 10px 0;
+        }
+        .input-group .form-control {
+            border-radius: 10px 0 0 10px;
+        }
+        .btn-primary-custom {
+            background: #3b82f6;
+            border: none;
+            border-radius: 10px;
+            padding: 14px 48px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-primary-custom:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        .feature-info {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+        .input-card {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid #f0f0f0;
+        }
+        .icon-circle {
+            width: 48px;
+            height: 48px;
+            background: #eff6ff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-left: 12px;
+        }
+        .footer-note {
+            color: #9ca3af;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar py-3 mb-4">
+        <div class="container">
+            <span class="navbar-brand mb-0 h4">
+                <span style="font-size: 28px;">🩺</span>
+                نظام التنبؤ بمرض السكري
+            </span>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="main-card">
+                    <div class="card-header-custom">
+                        <h2 class="mb-1">إدخال البيانات الصحية</h2>
+                        <p class="text-muted mb-0">أدخل المؤشرات الصحية للحصول على تقييم احتمالية الإصابة بالسكري</p>
+                    </div>
+                    
+                    <div class="card-body p-4">
+                        {% if error %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ error }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endif %}
+                        
+                        <form action="/predict" method="POST">
+                            <div class="row">
+                                <!-- عدد مرات الحمل -->
+                                <div class="col-md-6">
+                                    <div class="input-card">
+                                        <div class="d-flex align-items-start">
+                                            <div class="icon-circle">🤰</div>
+                                            <div class="flex-grow-1">
+                                                <label class="form-label">عدد مرات الحمل</label>
+                                                <input type="number" class="form-control" name="pregnancies" 
+                                                       min="0" max="20" value="0" required>
+                                                <small class="feature-info">عدد مرات الحمل السابقة</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- مستوى الجلوكوز -->
+                                <div class="col-md-6">
+                                    <div class="input-card">
+                                        <div class="d-flex align-items-start">
+                                            <div class="icon-circle">🩸</div>
+                                            <div class="flex-grow-1">
+                                                <label class="form-label">مستوى الجلوكوز</label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" name="glucose" 
+                                                           min="0" max="300" value="120" required>
+                                                    <span class="input-group-text">mg/dL</span>
+                                                </div>
+                                                <small class="feature-info">الطبيعي: 70-100 | ما قبل السكري: 100-125</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- ضغط الدم -->
+                                <div class="col-md-6">
+                                    <div class="input-card">
+                                        <div class="d-flex align-items-start">
+                                            <div class="icon-circle">💓</div>
+                                            <div class="flex-grow-1">
+                                                <label class="form-label">ضغط الدم</label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" name="blood_pressure" 
+                                                           min="0" max="200" value="70" required>
+                                                    <span class="input-group-text">mm Hg</span>
+                                                </div>
+                                                <small class="feature-info">الطبيعي: 60-80</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- سمك الجلد -->
+                                <div class="col-md-6">
+                                    <div class="input-card">
+                                        <div class="d-flex align-items-start">
+                                            <div class="icon-circle">📏</div>
+                                            <div class="flex-grow-1">
+                                                <label class="form-label">سمك الجلد</label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" name="skin_thickness" 
+                                                           min="0" max="100" value="20" required>
+                                                    <span class="input-group-text">mm</span>
+                                                </div>
+                                                <small class="feature-info">سمك طية الجلد في العضلة ثلاثية الرؤوس</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- الأنسولين -->
+                                <div class="col-md-6">
+                                    <div class="input-card">
+                                        <div class="d-flex align-items-start">
+                                            <div class="icon-circle">💉</div>
+                                            <div class="flex-grow-1">
+                                                <label class="form-label">الأنسولين</label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" name="insulin" 
+                                                           min="0" max="900" value="80" required>
+                                                    <span class="input-group-text">mu U/ml</span>
+                                                </div>
+                                                <small class="feature-info">مستوى الأنسولين في الدم</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- مؤشر كتلة الجسم -->
+                                <div class="col-md-6">
+                                    <div class="input-card">
+                                        <div class="d-flex align-items-start">
+                                            <div class="icon-circle">⚖️</div>
+                                            <div class="flex-grow-1">
+                                                <label class="form-label">مؤشر كتلة الجسم (BMI)</label>
+                                                <div class="input-group">
+                                                    <input type="number" step="0.1" class="form-control" name="bmi" 
+                                                           min="0" max="70" value="25" required>
+                                                    <span class="input-group-text">kg/m²</span>
+                                                </div>
+                                                <small class="feature-info">الطبيعي: 18.5-25 | زيادة الوزن: 25-30</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- دالة النسب السكري -->
+                                <div class="col-md-6">
+                                    <div class="input-card">
+                                        <div class="d-flex align-items-start">
+                                            <div class="icon-circle">👨‍👩‍👧</div>
+                                            <div class="flex-grow-1">
+                                                <label class="form-label">دالة النسب السكري</label>
+                                                <input type="number" step="0.001" class="form-control" name="dpf" 
+                                                       min="0" max="3" value="0.5" required>
+                                                <small class="feature-info">التاريخ العائلي للسكري (0.0 - 2.5)</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- العمر -->
+                                <div class="col-md-6">
+                                    <div class="input-card">
+                                        <div class="d-flex align-items-start">
+                                            <div class="icon-circle">🎂</div>
+                                            <div class="flex-grow-1">
+                                                <label class="form-label">العمر</label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" name="age" 
+                                                           min="1" max="120" value="30" required>
+                                                    <span class="input-group-text">سنة</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-4 pt-2">
+                                <button type="submit" class="btn btn-primary-custom btn-lg">
+                                    تحليل البيانات
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <p class="footer-note">⚠️ هذا النظام للأغراض التعليمية فقط ولا يغني عن استشارة الطبيب</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
